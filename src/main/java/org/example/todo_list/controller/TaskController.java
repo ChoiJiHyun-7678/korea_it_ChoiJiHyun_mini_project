@@ -25,6 +25,6 @@ public class TaskController {
     public String completeTask(@PathVariable int id) {
         taskRepository.completeTask(id);
         return "완료 처리됨";
-    }
+    };
 }
 
