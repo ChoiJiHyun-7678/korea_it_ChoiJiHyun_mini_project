@@ -1,30 +1,34 @@
 package org.example.todo_list.controller;
 
+import org.example.todo_list.entity.User;
 import org.example.todo_list.entity.Task;
-import org.example.todo_list.repository.TaskRepository;
+import org.example.todo_list.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/task")
+@RequestMapping("/api")
 public class TaskController {
-    private final TaskRepository taskRepository = new TaskRepository();
 
-    @PostMapping("/add")
-    public Task addTask(@RequestBody String title) {
-        return taskRepository.addTask(title);
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
-    @GetMapping("/all")
-    public List<Task> getTasks() {
-        return taskRepository.getTasks();
+    // 할일 추가
+    @PostMapping("/tasks/{username}")
+    public Task addTask(@PathVariable String username, @RequestBody Task task) {
+        return taskService.addTask(username, task);
     }
 
-    @PostMapping("/complete/{id}")
-    public String completeTask(@PathVariable int id) {
-        taskRepository.completeTask(id);
-        return "완료 처리됨";
-    };
+    // 할일 조회
+    @GetMapping("/tasks/{username}")
+    public List<Task> getTasks(@PathVariable String username) {
+        return taskService.getTasks(username);
+    }
 }
+
+
 
