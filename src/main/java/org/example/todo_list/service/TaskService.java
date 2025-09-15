@@ -1,45 +1,51 @@
 package org.example.todo_list.service;
 
-import org.example.todo_list.entity.User;
 import org.example.todo_list.entity.Task;
-import org.example.todo_list.repository.UserRepository;
+import org.example.todo_list.entity.User;
 import org.example.todo_list.repository.TaskRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+    public TaskService(TaskRepository taskRepository, UserService userService) {
         this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
-    // 회원가입
-    public User registerUser(User user) {
-        return userRepository.save(user);
+    public List<Task> getTasks(String username) {
+        User user = userService.getUser(username);
+        return taskRepository.findByUser(user);
     }
 
-    // 로그인
-    public boolean validateLogin(String username, String password) {
-        return userRepository.findByUsername(username)
-                .map(user -> user.getPassword().equals(password))
-                .orElse(false);
-    }
-
-    // 할일 추가
-    public Task addTask(String username, Task task) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public Task addTask(String username, String content) {
+        User user = userService.getUser(username);
+        Task task = new Task();
         task.setUser(user);
+        task.setContent(content);
         return taskRepository.save(task);
     }
 
-    // 할일 조회
-    public List<Task> getTasks(String username) {
-        return taskRepository.findByUserUsername(username);
+    public Task updateTask(Integer id, String content, Boolean completed) {
+        Task task = taskRepository.findById(id).orElse(null);
+        if(task != null) {
+            if(content != null) task.setContent(content);
+            if(completed != null) task.setCompleted(completed);
+            taskRepository.save(task);
+        }
+        return task;
+    }
+
+    public boolean deleteTask(Integer id) {
+        if(taskRepository.existsById(id)) {
+            taskRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
