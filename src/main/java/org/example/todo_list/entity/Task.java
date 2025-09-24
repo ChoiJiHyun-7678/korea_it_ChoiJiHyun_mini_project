@@ -3,28 +3,24 @@ package org.example.todo_list.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tasks")
 public class Task {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
-    private boolean completed = false; // TINYINT(1) 매핑
+    private boolean completed = false;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Task() {}
-
-    // Getter / Setter
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }

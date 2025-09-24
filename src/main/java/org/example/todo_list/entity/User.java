@@ -1,30 +1,33 @@
 package org.example.todo_list.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id; // INT PK
+    private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String username; // 로그인 아이디
+    @Column(nullable = false, unique = true)
+    private String username;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false)
     private String password;
 
-    public User() {}
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
-    // Getter / Setter
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public List<Task> getTasks() { return tasks; }
+    public void setTasks(List<Task> tasks) { this.tasks = tasks; }
 }
